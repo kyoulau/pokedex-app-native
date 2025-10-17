@@ -1,5 +1,5 @@
 
-import { FlatList, StyleSheet, View, Text } from 'react-native';
+import { FlatList, StyleSheet, View, Text, TextInput,Alert } from 'react-native';
 import { Pokemon, PokemonListResult } from '../models/pokemon_model';
 import { useEffect, useState } from 'react';
 import PokemonCard from '../components/pokemon_card';
@@ -34,7 +34,7 @@ export default function PokemonListPage({ navigation }: Props) {
         setOffset(infinityScrollSize)
     }, []);
 
-useLayoutEffect(() => {
+    useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
                 <TouchableOpacity onPress={() => navigation.navigate('Favorites')}>
@@ -48,11 +48,50 @@ useLayoutEffect(() => {
         navigation.navigate('Detail', { pokemonName: pokemon.name });
     }
 
+    const [searchQuery, setSearchQuery] = useState('');
+    async function handleSearch() {
+        const formattedQuery = searchQuery.trim().toLowerCase();
+        
+        if (!formattedQuery) {
+            Alert.alert("Busca vazia", "Por favor, digite o nome ou número de um Pokémon.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${formattedQuery}`);
+            
+            if (!response.ok) {
+                throw new Error("Pokémon não encontrado");
+            }
+
+            const data = await response.json();
+            const foundPokemon = Pokemon.fromJson(data);
+            
+            navigation.navigate('Detail', { pokemonName: foundPokemon.name });
+            setSearchQuery('');
+
+        } catch (error) {
+            Alert.alert("Erro", "Pokémon não encontrado. Verifique o nome ou número e tente novamente.");
+        }
+    }
+
     const [pokemon, setPokemon] = useState<Pokemon[]>([]);
     const [offset, setOffset] = useState(0)
 
     return (
         <View style={styles.container}>
+            <View style={styles.searchContainer}>
+                <TextInput
+                    style={styles.searchInput}
+                    placeholder="Buscar por nome ou número"
+                    value={searchQuery}
+                    onChangeText={setSearchQuery} 
+                    onSubmitEditing={handleSearch} 
+                />
+                <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+                    <Text style={styles.searchButtonText}>Buscar</Text>
+                </TouchableOpacity>
+            </View>
             <FlatList
             numColumns={2}
             style={styles.list}
@@ -87,12 +126,41 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     cardContainer: {
-        width: '50%',    
-        padding: 8,       
+        width: '66%',    
+        padding: 10,       
     },
     headerButtonText: {
         fontSize: 16,
         color: '#007AFF',
+        fontWeight: '600',
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        padding: 10,
+        backgroundColor: '#FFFFFF',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E0E0E0',
+    },
+    searchInput: {
+        flex: 1,
+        height: 40,
+        borderColor: '#CCCCCC',
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        marginRight: 10,
+    },
+    searchButton:{
+        height: 40,
+        backgroundColor: '#bedbf6ff',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 15,
+        borderRadius: 8,
+    },
+    searchButtonText: {
+        fontSize: 16,
+        color: '#000000ff',
         fontWeight: '600',
     }
 });

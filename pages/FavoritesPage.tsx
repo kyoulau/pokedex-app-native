@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     cardContainer: {
-        width: '50%',
+        width: '66%',
         padding: 8,
     },
     emptyContainer: {

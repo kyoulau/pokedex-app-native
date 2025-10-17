@@ -28,7 +28,6 @@ export default function PokemonDetailPage({ route, navigation }: Props) {
                 setPokemonDetails(detailedPokemon);
             } catch (error) {
                 console.error("Falha ao buscar detalhes do Pokémon:", error);
-                // Aqui você poderia adicionar um estado para exibir um erro na tela
             } finally {
                 setIsLoading(false); 
             }
@@ -129,7 +128,7 @@ const styles = StyleSheet.create({
     },
     favoriteIcon: {
         fontSize: 32,
-        color: '#FFD700', // Cor de ouro para a estrela
+        color: '#FFD700', 
     },
     centered: {
         flex: 1,
