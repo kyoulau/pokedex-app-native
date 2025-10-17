@@ -1,7 +1,8 @@
 
 # Pokédex Mobile com React Native
 
-*(Opcional: você pode criar um GIF rápido do seu app funcionando e substituir o link acima para deixar o README mais atrativo)*
+![Demonstração da Pokédex](https://github.com/kyoulau/pokedex-app-native/blob/main/imagens/IMG_3529.png)
+![Tela dito](https://github.com/kyoulau/pokedex-app-native/blob/main/imagens/IMG_3533.png)
 
 ## 📖 Sobre o Projeto
 
