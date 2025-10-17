@@ -1,20 +1,19 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import PokemonListPage from './pages/pokemon_list_page';
+import { NavigationContainer } from '@react-navigation/native';
+
+
+import * as React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+const stack = createNativeStackNavigator();
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Tela inicial</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    return (
+        <NavigationContainer>
+            <stack.Navigator>
+                <stack.Screen name="Home" component={PokemonListPage} />
+            </stack.Navigator>
+        </NavigationContainer>
+    )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
