@@ -77,6 +77,7 @@ export class PokemonSprites {
   readonly back_shiny: string | null;
   readonly back_female: string | null;
   readonly back_shiny_female: string | null;
+  other?: OtherSprites; 
 
   constructor(init: Partial<PokemonSprites> = {}) {
     this.front_default = init.front_default ?? null;
@@ -612,4 +613,13 @@ export class PokemonListResponse {
       results: this.results.map((r) => r.toJson()),
     };
   }
+}
+
+
+export interface OfficialArtwork {
+    front_default: string | null;
+}
+
+export interface OtherSprites {
+    'official-artwork': OfficialArtwork;
 }
