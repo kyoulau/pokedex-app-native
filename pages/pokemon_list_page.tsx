@@ -3,8 +3,13 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import { Pokemon, PokemonListResult } from '../models/pokemon_model';
 import { useEffect, useState } from 'react';
 import PokemonCard from '../components/pokemon_card';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../App';
+import { TouchableOpacity } from 'react-native';
 
-export default function PokemonListPage() {
+
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+export default function PokemonListPage({ navigation }: Props) {
     const infinityScrollSize = 20
 
     async function fetchPokemon(poke: PokemonListResult) {
@@ -29,6 +34,10 @@ export default function PokemonListPage() {
         setOffset(infinityScrollSize)
     }, []);
 
+    function navigateToDetails(pokemon: Pokemon) {
+        navigation.navigate('Detail', { pokemonName: pokemon.name });
+    }
+
     const [pokemon, setPokemon] = useState<Pokemon[]>([]);
     const [offset, setOffset] = useState(0)
 
@@ -37,21 +46,23 @@ export default function PokemonListPage() {
             <FlatList
             numColumns={2}
             style={styles.list}
+            contentContainerStyle={{ paddingVertical: 8 }}
             data={pokemon ? pokemon : []}
             keyExtractor={(item) => item.name}
-            renderItem={({ item }) => <PokemonCard pokemon={item} />}
-            contentContainerStyle={{
-                paddingHorizontal: 10,
-            }}
-            columnWrapperStyle={{
-                justifyContent: "space-between",
-            }}
-
-            onEndReachedThreshold={0.5}
-            onEndReached={() => {
-                setOffset((prev) => prev + 20);
-                fetchPokemons(offset)
-            }}
+            renderItem={({ item }) => (
+                <TouchableOpacity
+                style={styles.cardContainer}
+                onPress={() => navigateToDetails(item)}>
+                        <PokemonCard pokemon={item} />
+                </TouchableOpacity>
+            )}
+            ItemSeparatorComponent={() => <View style={{ height: 20}} />}
+                onEndReachedThreshold={0.5}
+                onEndReached={() => {
+                    const newOffset = offset + infinityScrollSize;
+                    fetchPokemons(newOffset);
+                    setOffset(newOffset);
+                }}
             />
         </View>
     );
@@ -60,12 +71,13 @@ export default function PokemonListPage() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
+        backgroundColor: '#F7F7F7', // Um fundo mais suave
     },
     list: {
         width: '100%',
-        backgroundColor: '#fff',
+    },
+    cardContainer: {
+        width: '50%',      // CADA ITEM OCUPA METADE DA TELA
+        padding: 8,        // O ESPAÇAMENTO É CRIADO INTERNAMENTE
     },
 });
