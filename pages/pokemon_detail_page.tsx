@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App'; 
 import { useEffect, useState } from 'react';
 import { Pokemon } from '../models/pokemon_model';
+import { useFavorites } from '../contexts/FavoritesContext';
 
 // 1. Tipamos as props para receber 'route' e 'navigation'
 type Props = NativeStackScreenProps<RootStackParamList, 'Detail'>;
@@ -13,6 +14,10 @@ export default function PokemonDetailPage({ route, navigation }: Props) {
 
     const [pokemonDetails, setPokemonDetails] = useState<Pokemon | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+
+    const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+
+    const isCurrentlyFavorite = isFavorite(pokemonDetails?.id ?? 0);
 
     useEffect(() => {
         async function fetchPokemonDetails() {
@@ -32,6 +37,16 @@ export default function PokemonDetailPage({ route, navigation }: Props) {
         fetchPokemonDetails();
         navigation.setOptions({ title: pokemonName.charAt(0).toUpperCase() + pokemonName.slice(1) });
     }, [pokemonName]);
+
+    const handleToggleFavorite = () => {
+        if (!pokemonDetails) return; 
+
+        if (isCurrentlyFavorite) {
+            removeFavorite(pokemonDetails.id);
+        } else {
+            addFavorite(pokemonDetails);
+        }
+    };
 
 
     if (isLoading) {
@@ -57,6 +72,15 @@ export default function PokemonDetailPage({ route, navigation }: Props) {
                 source={{ uri: pokemonDetails.sprites.other?.['official-artwork'].front_default || pokemonDetails.sprites.front_default! }}
             />
             
+            <View style={styles.headerContainer}>
+                <Text style={styles.name}>{pokemonDetails.name}</Text>
+                <TouchableOpacity onPress={handleToggleFavorite} style={styles.favoriteButton}>
+                    <Text style={styles.favoriteIcon}>
+                        {isCurrentlyFavorite ? '★' : '☆'}
+                    </Text>
+                </TouchableOpacity>
+            </View>
+
             <Text style={styles.name}>{pokemonDetails.name}</Text>
             <Text style={styles.pokedexNumber}>Nº {pokemonDetails.id}</Text>
 
@@ -88,6 +112,25 @@ export default function PokemonDetailPage({ route, navigation }: Props) {
 }
 
 const styles = StyleSheet.create({
+    headerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10,
+    },
+    name: {
+        fontSize: 32,
+        fontWeight: 'bold',
+        textTransform: 'capitalize',
+    },
+    favoriteButton: {
+        marginLeft: 15,
+        padding: 5,
+    },
+    favoriteIcon: {
+        fontSize: 32,
+        color: '#FFD700', // Cor de ouro para a estrela
+    },
     centered: {
         flex: 1,
         justifyContent: 'center',
@@ -103,12 +146,6 @@ const styles = StyleSheet.create({
         width: 250,
         height: 250,
         resizeMode: 'contain',
-    },
-    name: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        textTransform: 'capitalize',
-        marginTop: 10,
     },
     pokedexNumber: {
         fontSize: 20,

@@ -1,12 +1,12 @@
 
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View, Text } from 'react-native';
 import { Pokemon, PokemonListResult } from '../models/pokemon_model';
 import { useEffect, useState } from 'react';
 import PokemonCard from '../components/pokemon_card';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
 import { TouchableOpacity } from 'react-native';
-
+import { useLayoutEffect } from 'react'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 export default function PokemonListPage({ navigation }: Props) {
@@ -33,6 +33,16 @@ export default function PokemonListPage({ navigation }: Props) {
         fetchPokemons(0)
         setOffset(infinityScrollSize)
     }, []);
+
+useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <TouchableOpacity onPress={() => navigation.navigate('Favorites')}>
+                    <Text style={styles.headerButtonText}>Favoritos ★</Text>
+                </TouchableOpacity>
+            ),
+        });
+    }, [navigation]);
 
     function navigateToDetails(pokemon: Pokemon) {
         navigation.navigate('Detail', { pokemonName: pokemon.name });
@@ -71,13 +81,18 @@ export default function PokemonListPage({ navigation }: Props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F7F7F7', // Um fundo mais suave
+        backgroundColor: '#F7F7F7', 
     },
     list: {
         width: '100%',
     },
     cardContainer: {
-        width: '50%',      // CADA ITEM OCUPA METADE DA TELA
-        padding: 8,        // O ESPAÇAMENTO É CRIADO INTERNAMENTE
+        width: '50%',    
+        padding: 8,       
     },
+    headerButtonText: {
+        fontSize: 16,
+        color: '#007AFF',
+        fontWeight: '600',
+    }
 });
