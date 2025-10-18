@@ -31,14 +31,7 @@ export default function FavoritesPage({ navigation }: Props) {
                 numColumns={2}
                 style={styles.list}
                 contentContainerStyle={{ paddingVertical: 8 }}
-                renderItem={({ item }) => (
-                    <TouchableOpacity 
-                        style={styles.cardContainer} 
-                        onPress={() => navigateToDetails(item)}
-                    >
-                        <PokemonCard pokemon={item} />
-                    </TouchableOpacity>
-                )}
+                renderItem={({ item }) => ( <PokemonCard pokemon={item} on_press={() => {navigateToDetails(item)}}/> )}
             />
         </View>
     );

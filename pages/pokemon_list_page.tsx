@@ -1,5 +1,5 @@
 
-import { FlatList, StyleSheet, View, Text, TextInput,Alert } from 'react-native';
+import { FlatList, StyleSheet, View, Text, TextInput,Alert, Pressable } from 'react-native';
 import { Pokemon, PokemonListResult } from '../models/pokemon_model';
 import { useEffect, useState } from 'react';
 import PokemonCard from '../components/pokemon_card';
@@ -98,14 +98,8 @@ export default function PokemonListPage({ navigation }: Props) {
             contentContainerStyle={{ paddingVertical: 8 }}
             data={pokemon ? pokemon : []}
             keyExtractor={(item) => item.name}
-            renderItem={({ item }) => (
-                <TouchableOpacity
-                style={styles.cardContainer}
-                onPress={() => navigateToDetails(item)}>
-                        <PokemonCard pokemon={item} />
-                </TouchableOpacity>
-            )}
-            ItemSeparatorComponent={() => <View style={{ height: 20}} />}
+            renderItem={({ item }) => ( <PokemonCard pokemon={item} on_press={() => {navigateToDetails(item)}}/> )}
+            ItemSeparatorComponent={() => <></>}
                 onEndReachedThreshold={0.5}
                 onEndReached={() => {
                     const newOffset = offset + infinityScrollSize;
@@ -113,6 +107,7 @@ export default function PokemonListPage({ navigation }: Props) {
                     setOffset(newOffset);
                 }}
             />
+        
         </View>
     );
 }

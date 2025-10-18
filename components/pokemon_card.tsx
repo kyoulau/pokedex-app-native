@@ -2,9 +2,10 @@ import { View, Text, Pressable, Image } from "react-native";
 import { Pokemon } from "../models/pokemon_model";
 import { StyleSheet } from "react-native";
 
-export default function PokemonCard(props: {pokemon: Pokemon}) {
+
+export default function PokemonCard(props: {pokemon: Pokemon, on_press: Function}) {
     return (
-        <Pressable style={styles.card} onPress={() => console.log(`${props.pokemon.name} clicked`)}>
+        <Pressable style={styles.card} onPress={() => {props.on_press()}}>
             <Image source={{ uri: props.pokemon.sprites.front_default! }} style={{ width: 100, height: 100 }} />
             <Text style={styles.name}> {'#' + props.pokemon.id} </Text>
             <Text style={styles.name}> {props.pokemon.name} </Text>
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#f8f8f8",
         borderRadius: 10,
         padding: 15,
-        marginVertical: 10,
+        marginVertical: 5,
         marginHorizontal: 5,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
